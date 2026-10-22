@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+data/
+next-env.d.ts
+*.tsbuildinfo
+.env*.local
+.env
+.next-app/
+
+# Desktop app build
+.next-desktop/
+dist-desktop/
+desktop/node_modules/

@@ -1,0 +1,12 @@
+{
+  "name": "pursuit",
+  "productName": "Pursuit",
+  "version": "0.1.0",
+  "description": "Your job search, prepared.",
+  "author": "Pursuit",
+  "private": true,
+  "main": "main.cjs",
+  "dependencies": {
+    "electron-updater": "6.8.10"
+  }
+}

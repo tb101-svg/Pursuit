@@ -1,0 +1,42 @@
+# Builds the Windows installer and publishes it as a GitHub Release.
+# To release: bump "version" in desktop/package.json, commit, then push a
+# matching tag, e.g. `git tag v0.1.1 && git push origin v0.1.1`.
+# Installed copies of Pursuit pick the new version up on their next start.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Check the tag matches the app version
+        shell: bash
+        run: |
+          version=$(node -p "require('./desktop/package.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME doesn't match desktop/package.json version $version" >&2
+            exit 1
+          fi
+
+      - name: Install
+        run: |
+          npm ci
+          npm ci --prefix desktop
+
+      - name: Build and publish the installer
+        run: npm run desktop:release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

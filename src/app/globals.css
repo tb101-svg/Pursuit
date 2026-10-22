@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --color-ink: #0b0d12;
+  --color-fg: #f3f5f9;
+  --color-fg-2: #dde1ea;
+  --color-muted: #a9b0bf;
+  --color-faint: #8a91a1;
+  --color-line: rgb(255 255 255 / 0.1);
+  --color-accent: #6e8bff;
+  --color-accent-soft: #c3ceff;
+  --color-amber: #f5b454;
+  --color-amber-soft: #f5c77e;
+  --color-green: #4ade9a;
+  --color-red: #ff7a85;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    background: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::placeholder {
+    color: var(--color-faint);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  button:not(:disabled),
+  [role="button"] {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  /* Frosted panel: the core surface of the app. */
+  .glass {
+    background: rgb(255 255 255 / 0.055);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.07),
+      0 10px 30px rgb(0 0 0 / 0.28);
+  }
+  @media (max-width: 767px) {
+    .glass {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  }
+  .glass-hover {
+    transition: background-color 0.15s, border-color 0.15s;
+  }
+  .glass-hover:hover {
+    background: rgb(255 255 255 / 0.085);
+    border-color: rgb(255 255 255 / 0.2);
+  }
+  .glow-ring {
+    border-color: var(--color-accent);
+    box-shadow:
+      0 0 0 1px var(--color-accent),
+      0 0 32px rgb(110 139 255 / 0.35);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background-color 0.15s, opacity 0.15s;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+  }
+  .btn-primary {
+    background: var(--color-fg);
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .btn-primary:hover {
+    background: #ffffff;
+  }
+  .btn-ghost {
+    background: rgb(255 255 255 / 0.06);
+    border: 1px solid rgb(255 255 255 / 0.14);
+    color: var(--color-fg);
+  }
+  .btn-ghost:hover {
+    background: rgb(255 255 255 / 0.1);
+  }
+  .btn-sm {
+    height: 32px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+  .btn-link {
+    color: #8fa6ff;
+    font-size: 13px;
+  }
+  .btn-link:hover {
+    color: var(--color-accent-soft);
+  }
+
+  .input {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    background: rgb(0 0 0 / 0.25);
+    color: var(--color-fg);
+    font-size: 14px;
+  }
+  textarea.input {
+    height: auto;
+    padding: 10px 12px;
+    line-height: 1.55;
+  }
+  select.input option {
+    background: #151821;
+  }
+  .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-faint);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.14);
+    color: #c9ced8;
+    white-space: nowrap;
+  }
+}
+
+/* Demo mode (components/DemoMode.tsx): hide what could identify a company. */
+html[data-demo]:not([data-demo-ready]) main {
+  visibility: hidden; /* until names are redacted */
+}
+html[data-demo] [data-logo] {
+  filter: blur(8px) grayscale(1);
+}
+html[data-demo] textarea {
+  filter: blur(5px);
+}
+html[data-demo] [data-demo-hide] {
+  display: none; /* internal panels: Claude's run log, Needs you */
+}

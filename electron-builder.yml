@@ -1,0 +1,41 @@
+# Windows installer for Pursuit: `npm run desktop:dist`.
+# The app shell is desktop/; the server built by scripts/build-desktop.mjs
+# ships beside it as plain files (resources/server), not inside the asar.
+appId: app.pursuit.desktop
+productName: Pursuit
+electronVersion: 44.7.0
+directories:
+  app: desktop
+  output: dist-desktop/installer
+files:
+  - main.cjs
+  - package.json
+extraResources:
+  - from: dist-desktop/server
+    to: server
+    # Dot-folders and node_modules are skipped unless named.
+    filter:
+      - "**/*"
+      - ".next-desktop/**/*"
+      - ".next-desktop/node_modules/**/*"
+  - from: dist-desktop/server/node_modules
+    to: server/node_modules
+    filter:
+      - "**/*"
+win:
+  target: nsis
+  icon: public/icons/icon-512.png
+nsis:
+  oneClick: true
+  perMachine: false
+  artifactName: Pursuit-Setup-${version}.${ext}
+  shortcutName: Pursuit
+  # Uninstalling keeps the user's data (their roles, stories and settings).
+  deleteAppDataOnUninstall: false
+# Releases and auto-updates: the installer is published to this repo's
+# GitHub Releases (see .github/workflows/release.yml), and installed copies
+# check it on start.
+publish:
+  provider: github
+  owner: tb101-svg
+  repo: Pursuit
