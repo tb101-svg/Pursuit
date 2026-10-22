@@ -36,7 +36,21 @@ jobs:
           npm ci
           npm ci --prefix desktop
 
-      - name: Build and publish the installer
+      # Create the draft first: when electron-builder creates it, its parallel
+      # uploads can race and make two drafts.
+      - name: Create a draft release
+        shell: bash
+        run: gh release create "$GITHUB_REF_NAME" --draft --title "Pursuit ${GITHUB_REF_NAME#v}" --notes-file .github/release-notes.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and upload the installer
         run: npm run desktop:release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish the release
+        shell: bash
+        run: gh release edit "$GITHUB_REF_NAME" --draft=false
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
